@@ -60,7 +60,7 @@ async def incoming_message_f(client, message):
     if BOT_PM and message.chat.type != enums.ChatType.PRIVATE and str(message.chat.id) not in str(EXCEP_CHATS):
         LOGGER.info("[Bot PM] Initiated")
         try:
-            msg1 = f'Leech Started !!'
+            msg1 = 'Leech Started !!'
             send = await client.send_message(message.from_user.id, text=msg1)
             await send.delete()
         except Exception as e:
@@ -78,9 +78,9 @@ async def incoming_message_f(client, message):
     if USER_DTS:
         text__, txtCancel = getDetails(client, message, 'Leech')
         link_text = await message.reply_text(text=text__, parse_mode=enums.ParseMode.HTML, quote=True, disable_web_page_preview=True)
-        
-        endText = f"\n📬 <b>Source :</b> <a href='{message.link}'>Click Here</a>\n\n#LeechStart #FXLogs"
+
         if not txtCancel:
+            endText = f"\n📬 <b>Source :</b> <a href='{message.link}'>Click Here</a>\n\n#LeechStart #FXLogs"
             if LEECH_LOG:
                 text__ += endText
                 logs_msg = await client.send_message(chat_id=int(LEECH_LOG), text=text__, parse_mode=enums.ParseMode.HTML, disable_web_page_preview=True)
@@ -304,9 +304,10 @@ async def rename_tg_file(client, message):
 
     if len(message.command) > 1:
         new_name = (
-            str(Path().resolve()) + "/" +
-            message.text.split(" ", maxsplit=1)[1].strip()
+            f"{str(Path().resolve())}/"
+            + message.text.split(" ", maxsplit=1)[1].strip()
         )
+
         file, mess_age = await download_tg(client, message)
         try:
             if file:

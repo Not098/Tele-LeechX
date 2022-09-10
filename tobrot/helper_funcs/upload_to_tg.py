@@ -223,9 +223,8 @@ async def upload_to_gdrive(file_upload, message, messa_ge, g_id):
         ]
         fileURL = opath.basename(file_upload)
         if INDEX_LINK:
-            _idno = 1
             INDEXS = INDEX_LINK.split(" ")
-            for index in INDEXS:
+            for _idno, index in enumerate(INDEXS, start=1):
                 indexurl = f"{index}/{fileURL}"
                 tam_link = utils.requote_uri(indexurl)
                 LOGGER.info(f'Index Link #{_idno} : {tam_link}')
@@ -239,7 +238,6 @@ async def upload_to_gdrive(file_upload, message, messa_ge, g_id):
                     button.append([
                         InlineKeyboardButton(text=f"⚡️ Index Link #{_idno}⚡️", url=f"{tam_link}")
                     ])
-                _idno += 1
         button_markup = InlineKeyboardMarkup(button)
         await asleep(EDIT_SLEEP_TIME_OUT)
         await messa_ge.reply_text(
@@ -297,16 +295,14 @@ async def upload_to_gdrive(file_upload, message, messa_ge, g_id):
         ]]
         fileURL = opath.basename(file_upload)
         if INDEX_LINK:
-            _idno = 1
             INDEXS = INDEX_LINK.split(" ")
-            for index in INDEXS:
+            for _idno, index in enumerate(INDEXS, start=1):
                 indexurl = f"{index}/{fileURL}"
                 tam_link = utils.requote_uri(indexurl)
                 LOGGER.info(f'Index Link #{_idno} : {tam_link}')
                 button.append([
                     InlineKeyboardButton(text=f"⚡️ Index Link #{_idno}⚡️", url=f"{tam_link}")
                 ])
-                _idno += 1
         button_markup = InlineKeyboardMarkup(button)
         await asleep(EDIT_SLEEP_TIME_OUT)
         await messa_ge.reply_text(

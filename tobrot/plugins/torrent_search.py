@@ -24,12 +24,12 @@ from pyrogram.parser import html as pyrogram_html
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
 
-from tobrot import app, bot, LOGGER 
+from tobrot import app, bot, LOGGER
 from tobrot.helper_funcs.bot_commands import BotCommands
 from tobrot.helper_funcs.filters import CustomFilters
 
 search_lock = asyncio.Lock()
-search_info = {False: dict(), True: dict()}
+search_info = {False: {}, True: {}}
 
 def sendMessage(text: str, bot, update: Update):
     try:
@@ -93,7 +93,7 @@ async def return_search(query, page=1, sukebei=False):
         except IndexError:
             return '', len(results), ttl
 
-message_info = dict()
+message_info = {}
 ignore = set()
 
 async def nyaa_search(client, message):
@@ -113,7 +113,11 @@ async def init_search(client, message, query, sukebei):
     if not result:
         await message.reply_text('No results found')
     else:
-        buttons = [InlineKeyboardButton(f'1/{pages}', 'nyaa_nop'), InlineKeyboardButton(f'Next', 'nyaa_next')]
+        buttons = [
+            InlineKeyboardButton(f'1/{pages}', 'nyaa_nop'),
+            InlineKeyboardButton('Next', 'nyaa_next'),
+        ]
+
         if pages == 1:
             buttons.pop()
         reply = await message.reply_text(result, reply_markup=InlineKeyboardMarkup([
@@ -151,7 +155,12 @@ async def nyaa_callback(client, callback_query):
                 await callback_query.answer('...no', cache_time=3600)
                 return
             text, pages, ttl = await return_search(query, current_page, sukebei)
-        buttons = [InlineKeyboardButton(f'Prev', 'nyaa_back'), InlineKeyboardButton(f'{current_page}/{pages}', 'nyaa_nop'), InlineKeyboardButton(f'Next', 'nyaa_next')]
+        buttons = [
+            InlineKeyboardButton('Prev', 'nyaa_back'),
+            InlineKeyboardButton(f'{current_page}/{pages}', 'nyaa_nop'),
+            InlineKeyboardButton('Next', 'nyaa_next'),
+        ]
+
         if ttl_ended:
             buttons = [InlineKeyboardButton('Search Expired', 'nyaa_nop')]
         else:
@@ -193,9 +202,7 @@ class TorrentSearch:
         
     @staticmethod
     def format_magnet(string: str):
-        if not string:
-            return ""
-        return string.split('&tr', 1)[0]
+        return string.split('&tr', 1)[0] if string else ""
 
     def get_formatted_string(self, values):
         string = self.RESULT_STR.format(**values)
@@ -206,18 +213,19 @@ class TorrentSearch:
                 tmp_str.format(**f, magnet=self.format_magnet(f['Magnet']))
                 for f in values['Files']
             )
-        else:
-            magnet = values.get('magnet', values.get('Magnet'))  # Avoid updating source dict
-            if magnet:
-                extra += f"⚡Magnet: `{self.format_magnet(magnet)}`"
+        elif magnet := values.get('magnet', values.get('Magnet')):
+            extra += f"⚡Magnet: `{self.format_magnet(magnet)}`"
         if (extra):
             string += "\n" + extra
         return string
 
     async def update_message(self):
-        prevBtn = InlineKeyboardButton(f"Prev", callback_data=f"{self.command}_previous")
+        prevBtn = InlineKeyboardButton(
+            "Prev", callback_data=f"{self.command}_previous"
+        )
+
         delBtn = InlineKeyboardButton(f"{emoji.CROSS_MARK}", callback_data=f"{self.command}_delete")
-        nextBtn = InlineKeyboardButton(f"Next", callback_data=f"{self.command}_next")
+        nextBtn = InlineKeyboardButton("Next", callback_data=f"{self.command}_next")
 
         inline = []
         if (self.index != 0):
@@ -336,9 +344,10 @@ torrents_dict = {
     'ts': {'source': f"{TORRENT_API}/all/", 'result_str': RESULT_STR_ALL}
 }
 
-torrent_handlers = []
-for command, value in torrents_dict.items():
-    torrent_handlers.append(TorrentSearch(command, value['source'], value['result_str']))
+torrent_handlers = [
+    TorrentSearch(command, value['source'], value['result_str'])
+    for command, value in torrents_dict.items()
+]
 
 async def searchhelp(self, message):
     help_string = '''
