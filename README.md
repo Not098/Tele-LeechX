@@ -1,5 +1,6 @@
 ```diff
-- Repo Dead, Bye Enjoy your Life !!
++ Repo ReBorn !!
++ Awesome Features Soon !!
 ```
 
 <kbd>
@@ -98,7 +99,6 @@ I will be very Obliged if, you help in Bug Fixing, Features Adding, and More  . 
 
 * [`MysterySD`](https://github.com/5MysterySD) Me 🧐 For Speedtest, Direct Link Support, UI, 4GB Uploading, Telegram Log Display and More
 * [`KGK06`](https://github.com/KGK06) For Merging Different Repos 
-* [`XcodersHub`](https://github.com/XcodersHub) For The Aria2 Config & Little More
 * [`GautamKumar`](https://github.com/gautamajay52/TorrentLeech-Gdrive) 😬
 * [`SpEcHiDe`](https://github.com/SpEcHiDe/PublicLeech) for his wonderful code😚
 * [`Rclone Team`](https://rclone.org) for theirs awesome tool☁️
